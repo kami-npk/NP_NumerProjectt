@@ -35,9 +35,9 @@ const GraphicalMethods = () => {
         const randomEquation = filteredData[Math.floor(Math.random() * filteredData.length)];
         
         // Set the values directly from the API response
-        setEquation(randomEquation.fx || "");
-        setXStart(randomEquation.xl || "");
-        setXEnd(randomEquation.xr || "");
+        setEquation(randomEquation.fx);
+        setXStart(randomEquation.xl);
+        setXEnd(randomEquation.xr);
         
         toast({
           title: "Equation loaded",
@@ -54,7 +54,8 @@ const GraphicalMethods = () => {
     }
   };
 
-  const calculateRoot = () => {
+  const calculateRoot = (e) => {
+    e.preventDefault();
     const xStartNum = parseFloat(xStart);
     const xEndNum = parseFloat(xEnd);
     const step = (xEndNum - xStartNum) / 100;
@@ -65,8 +66,8 @@ const GraphicalMethods = () => {
     let minX = xStartNum;
     let iter = 0;
 
-    for (let x = xStartNum; x <= xEndNum; x += step) {
-      try {
+    try {
+      for (let x = xStartNum; x <= xEndNum; x += step) {
         const y = evaluate(equation, { x });
         newGraphData.push({ x, y });
         
@@ -80,15 +81,24 @@ const GraphicalMethods = () => {
         const error = absY;
         newIterations.push({ iteration: iter, x, error });
         newErrorData.push({ iteration: iter, error });
-      } catch (error) {
-        console.error('Error evaluating equation:', error);
       }
-    }
 
-    setResult(minX);
-    setGraphData(newGraphData);
-    setIterations(newIterations);
-    setErrorData(newErrorData);
+      setResult(minX);
+      setGraphData(newGraphData);
+      setIterations(newIterations);
+      setErrorData(newErrorData);
+
+      toast({
+        title: "Calculation complete",
+        description: "Root found successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to calculate root. Please check your equation.",
+        variant: "destructive",
+      });
+    }
   };
 
   const additionalInputs = (
