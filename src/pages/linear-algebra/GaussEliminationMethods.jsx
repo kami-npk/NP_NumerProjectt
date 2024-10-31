@@ -57,6 +57,9 @@ const GaussEliminationMethods = () => {
 
             const n = Dimension;
 
+            // Add initial state as first step
+            addStep("Initial Matrix", matrixA, matrixB);
+
             // Gauss Elimination
             for (let k = 0; k < n; k++) {
                 if (Math.abs(matrixA[k][k]) < 1e-10) {
@@ -121,40 +124,9 @@ const GaussEliminationMethods = () => {
                 variant: "destructive",
             });
             
-            // Reset states on error
             setSolution([]);
             setSteps([]);
             setFormulas([]);
-        }
-    };
-
-    const fetchRandomEquation = async () => {
-        try {
-            const response = await fetch("http://localhost:80/linearalgebra.php");
-            const data = await response.json();
-
-            // Randomly select an equation
-            const randomIndex = Math.floor(Math.random() * data.length);
-            const equation = data[randomIndex];
-
-            // Create Matrix A and B from the selected equation
-            const matrixA = [
-                [parseFloat(equation.a11), parseFloat(equation.a12), parseFloat(equation.a13)],
-                [parseFloat(equation.a21), parseFloat(equation.a22), parseFloat(equation.a23)],
-                [parseFloat(equation.a31), parseFloat(equation.a32), parseFloat(equation.a33)],
-            ];
-
-            const matrixB = [
-                parseFloat(equation.b1),
-                parseFloat(equation.b2),
-                parseFloat(equation.b3),
-            ];
-
-            setMatrixA(matrixA);
-            setMatrixB(matrixB);
-            setDimension(3); // Reset dimension to 3
-        } catch (error) {
-            console.error("Error fetching random equation:", error);
         }
     };
 
@@ -194,6 +166,36 @@ const GaussEliminationMethods = () => {
             </div>
         </div>
     );
+
+    const fetchRandomEquation = async () => {
+        try {
+            const response = await fetch("http://localhost:80/linearalgebra.php");
+            const data = await response.json();
+
+            // Randomly select an equation
+            const randomIndex = Math.floor(Math.random() * data.length);
+            const equation = data[randomIndex];
+
+            // Create Matrix A and B from the selected equation
+            const matrixA = [
+                [parseFloat(equation.a11), parseFloat(equation.a12), parseFloat(equation.a13)],
+                [parseFloat(equation.a21), parseFloat(equation.a22), parseFloat(equation.a23)],
+                [parseFloat(equation.a31), parseFloat(equation.a32), parseFloat(equation.a33)],
+            ];
+
+            const matrixB = [
+                parseFloat(equation.b1),
+                parseFloat(equation.b2),
+                parseFloat(equation.b3),
+            ];
+
+            setMatrixA(matrixA);
+            setMatrixB(matrixB);
+            setDimension(3); // Reset dimension to 3
+        } catch (error) {
+            console.error("Error fetching random equation:", error);
+        }
+    };
 
     return (
         <div className="container mx-auto px-4 py-8">
