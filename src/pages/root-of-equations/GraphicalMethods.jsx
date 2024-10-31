@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { evaluate } from 'mathjs';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SharedInputForm } from './components/SharedInputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { IterationTable } from './components/IterationTable';
+import { useToast } from "@/components/ui/use-toast";
 
 const GraphicalMethods = () => {
   const [equation, setEquation] = useState("");
@@ -16,6 +18,33 @@ const GraphicalMethods = () => {
   const [iterations, setIterations] = useState([]);
   const [graphData, setGraphData] = useState([]);
   const [errorData, setErrorData] = useState([]);
+  const { toast } = useToast();
+
+  const getRandomEquation = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/rootofequation.php');
+      const data = await response.json();
+      const filteredData = data.filter(item => item.id === "1" || item.id === "2" || item.id === "3");
+
+      if (filteredData.length > 0) {
+        const randomEquation = filteredData[Math.floor(Math.random() * filteredData.length)];
+        setEquation(randomEquation.fx);
+        setXStart(randomEquation.xl);
+        setXEnd(randomEquation.xr);
+        toast({
+          title: "Success",
+          description: "Equation fetched successfully",
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch equation",
+        variant: "destructive",
+      });
+    }
+  };
 
   const calculateRoot = () => {
     const xStartNum = parseFloat(xStart);
@@ -76,6 +105,13 @@ const GraphicalMethods = () => {
           placeholder="Enter X end"
         />
       </div>
+      <Button 
+        onClick={getRandomEquation} 
+        className="w-full"
+        variant="outline"
+      >
+        Get Equation
+      </Button>
     </>
   );
 
