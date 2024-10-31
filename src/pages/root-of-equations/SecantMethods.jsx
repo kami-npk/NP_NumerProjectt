@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import { evaluate } from 'mathjs';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SharedInputForm } from './components/SharedInputForm';
-import { EquationGraph } from './components/EquationGraph';
-import { ErrorGraph } from './components/ErrorGraph';
-import { SecantIterationTable } from './components/SecantIterationTable';
 import { useToast } from "@/components/ui/use-toast";
+import { SecantInputForm } from './components/SecantInputForm';
+import { SecantResults } from './components/SecantResults';
 
 const SecantMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -120,102 +114,28 @@ const SecantMethods = () => {
     }
   };
 
-  const additionalInputs = (
-    <>
-      <div className="space-y-2">
-        <Label htmlFor="x0">X₀ (first initial value)</Label>
-        <Input
-          id="x0"
-          type="number"
-          value={x0}
-          onChange={(e) => setX0(e.target.value)}
-          placeholder="e.g., 0"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="x1">X₁ (second initial value)</Label>
-        <Input
-          id="x1"
-          type="number"
-          value={x1}
-          onChange={(e) => setX1(e.target.value)}
-          placeholder="e.g., 1"
-        />
-      </div>
-    </>
-  );
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Secant Method</h1>
       <div className="space-y-6">
-        <div className="max-w-md mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle>Input</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Input Equation f(x)</Label>
-                <Input
-                  value={equation}
-                  onChange={(e) => setEquation(e.target.value)}
-                  placeholder="e.g., x^2 - 4"
-                />
-              </div>
-              {additionalInputs}
-              <Button 
-                onClick={getRandomEquation} 
-                variant="outline" 
-                className="w-full"
-              >
-                Get Random Equation
-              </Button>
-              <Button onClick={calculateRoot} className="w-full">
-                Solve
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        <SecantInputForm
+          equation={equation}
+          x0={x0}
+          x1={x1}
+          onEquationChange={setEquation}
+          onX0Change={setX0}
+          onX1Change={setX1}
+          onGetRandom={getRandomEquation}
+          onCalculate={calculateRoot}
+        />
 
         {result !== null && (
-          <>
-            <Card>
-              <CardHeader>
-                <CardTitle>Result</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center font-semibold">Answer: {result.toPrecision(7)}</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Equation Graph</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <EquationGraph data={graphData} />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Error Graph</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ErrorGraph data={errorData} />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Iteration Table</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <SecantIterationTable data={iterations} />
-              </CardContent>
-            </Card>
-          </>
+          <SecantResults
+            result={result}
+            graphData={graphData}
+            errorData={errorData}
+            iterations={iterations}
+          />
         )}
       </div>
     </div>
