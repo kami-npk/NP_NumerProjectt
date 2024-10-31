@@ -27,7 +27,7 @@ const GraphicalMethods = () => {
 
       // Filter to get only the required IDs
       const filteredData = data.filter(item => 
-        item.id === "1" || item.id === "2" || item.id === "3"
+        ["1", "2", "3"].includes(item.data_id)
       );
 
       // Select a random equation
