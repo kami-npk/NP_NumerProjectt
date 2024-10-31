@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { InputForm } from './components/InputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { IterationTable } from './components/IterationTable';
-import { evaluate } from 'mathjs';
 import { diffEquation, error } from './components/CalculationUtils';
+import { useToast } from "@/components/ui/use-toast";
 
 const NewtonRaphsonMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -14,6 +15,37 @@ const NewtonRaphsonMethods = () => {
   const [iterations, setIterations] = useState([]);
   const [graphData, setGraphData] = useState([]);
   const [errorData, setErrorData] = useState([]);
+  const { toast } = useToast();
+
+  const getRandomEquation = async () => {
+    try {
+      const response = await fetch('http://localhost:80/rootofequation.php');
+      const data = await response.json();
+
+      const filteredData = data.filter(item => 
+        ["1", "2", "3"].includes(item.data_id)
+      );
+
+      if (filteredData.length > 0) {
+        const randomEquation = filteredData[Math.floor(Math.random() * filteredData.length)];
+        
+        setEquation(randomEquation.fx);
+        setInitialX(randomEquation.xl);
+        
+        toast({
+          title: "Equation loaded",
+          description: "Random equation has been loaded successfully.",
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch random equation.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const calculateRoot = () => {
     let x = parseFloat(initialX);
@@ -42,7 +74,6 @@ const NewtonRaphsonMethods = () => {
     setIterations(newIterations);
     setErrorData(newErrorData);
 
-    // Generate equation graph data
     const graphData = [];
     const step = 0.1;
     for (let x = -5; x <= 5; x += step) {
@@ -68,6 +99,14 @@ const NewtonRaphsonMethods = () => {
           onCalculate={calculateRoot}
           result={result}
         />
+        
+        <Button 
+          onClick={getRandomEquation} 
+          variant="outline" 
+          className="w-full max-w-md mx-auto block"
+        >
+          Get Random Equation
+        </Button>
 
         {result !== null && (
           <>

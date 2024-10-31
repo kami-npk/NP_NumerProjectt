@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { evaluate } from 'mathjs';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SharedInputForm } from './components/SharedInputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { BisectionIterationTable } from './components/BisectionIterationTable';
+import { useToast } from "@/components/ui/use-toast";
 
 const BisectionMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -16,6 +18,38 @@ const BisectionMethods = () => {
   const [iterations, setIterations] = useState([]);
   const [graphData, setGraphData] = useState([]);
   const [errorData, setErrorData] = useState([]);
+  const { toast } = useToast();
+
+  const getRandomEquation = async () => {
+    try {
+      const response = await fetch('http://localhost:80/rootofequation.php');
+      const data = await response.json();
+
+      const filteredData = data.filter(item => 
+        ["1", "2", "3"].includes(item.data_id)
+      );
+
+      if (filteredData.length > 0) {
+        const randomEquation = filteredData[Math.floor(Math.random() * filteredData.length)];
+        
+        setEquation(randomEquation.fx);
+        setXL(randomEquation.xl);
+        setXR(randomEquation.xr);
+        
+        toast({
+          title: "Equation loaded",
+          description: "Random equation has been loaded successfully.",
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch random equation.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const error = (xold, xnew) => Math.abs((xnew - xold) / xnew) * 100;
 
@@ -87,6 +121,13 @@ const BisectionMethods = () => {
           placeholder="e.g., 3"
         />
       </div>
+      <Button 
+        onClick={getRandomEquation} 
+        variant="outline" 
+        className="w-full"
+      >
+        Get Random Equation
+      </Button>
     </>
   );
 

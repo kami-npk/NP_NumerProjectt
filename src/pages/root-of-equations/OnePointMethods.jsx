@@ -7,11 +7,43 @@ import { useCalculation } from './hooks/useOnePointCalculation';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { IterationTable } from './components/IterationTable';
+import { useToast } from "@/components/ui/use-toast";
 
 const OnePointMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
   const [initialX, setInitialX] = useState("0");
   const { result, iterations, graphData, errorData, calculateRoot } = useCalculation();
+  const { toast } = useToast();
+
+  const getRandomEquation = async () => {
+    try {
+      const response = await fetch('http://localhost:80/rootofequation.php');
+      const data = await response.json();
+
+      const filteredData = data.filter(item => 
+        ["1", "2", "3"].includes(item.data_id)
+      );
+
+      if (filteredData.length > 0) {
+        const randomEquation = filteredData[Math.floor(Math.random() * filteredData.length)];
+        
+        setEquation(randomEquation.fx);
+        setInitialX(randomEquation.xl);
+        
+        toast({
+          title: "Equation loaded",
+          description: "Random equation has been loaded successfully.",
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch random equation.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,6 +86,14 @@ const OnePointMethods = () => {
                 />
               </div>
               <Button type="submit" className="w-full">Solve</Button>
+              <Button 
+                type="button"
+                onClick={getRandomEquation} 
+                variant="outline" 
+                className="w-full"
+              >
+                Get Random Equation
+              </Button>
             </form>
           </CardContent>
         </Card>
