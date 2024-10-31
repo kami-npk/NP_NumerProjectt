@@ -26,14 +26,18 @@ const GraphicalMethods = () => {
       const data = await response.json();
 
       // Filter to get only the required IDs
-      const filteredData = data.filter(item => item.id === "1" || item.id === "2" || item.id === "3");
+      const filteredData = data.filter(item => 
+        item.id === "1" || item.id === "2" || item.id === "3"
+      );
 
       // Select a random equation
       if (filteredData.length > 0) {
         const randomEquation = filteredData[Math.floor(Math.random() * filteredData.length)];
-        setEquation(randomEquation.fx);
-        setXStart(randomEquation.xl);
-        setXEnd(randomEquation.xr);
+        
+        // Set the values directly from the API response
+        setEquation(randomEquation.fx || "");
+        setXStart(randomEquation.xl || "");
+        setXEnd(randomEquation.xr || "");
         
         toast({
           title: "Equation loaded",
