@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import MatrixInput from './components/MatrixInput';
 
 const GaussEliminationMethods = () => {
@@ -23,10 +23,8 @@ const GaussEliminationMethods = () => {
     const handleMatrixAChange = (i, j, value) => {
         const updatedMatrixA = [...MatrixA];
         if (Array.isArray(i)) {
-            // Handle setting entire matrix
             setMatrixA(i);
         } else {
-            // Handle setting individual value
             updatedMatrixA[i][j] = parseFloat(value) || 0;
             setMatrixA(updatedMatrixA);
         }
@@ -34,10 +32,8 @@ const GaussEliminationMethods = () => {
 
     const handleMatrixBChange = (i, value) => {
         if (Array.isArray(i)) {
-            // Handle setting entire vector
             setMatrixB(i);
         } else {
-            // Handle setting individual value
             const updatedMatrixB = [...MatrixB];
             updatedMatrixB[i] = parseFloat(value) || 0;
             setMatrixB(updatedMatrixB);
@@ -179,7 +175,7 @@ const GaussEliminationMethods = () => {
                                 {steps.map((step, index) => (
                                     <div key={index}>
                                         <h4 className="text-lg font-medium text-center mb-2">Step {index + 1}: {step.description}</h4>
-                                        {renderMatrix(step)}
+                                        {renderMatrix(step.matrix, `After Step ${index + 1}`)}
                                     </div>
                                 ))}
 
