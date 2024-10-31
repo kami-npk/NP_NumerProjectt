@@ -104,7 +104,6 @@ const NewtonRaphsonMethods = () => {
                 value={equation}
                 onChange={(e) => setEquation(e.target.value)}
                 placeholder="e.g., x^2 - 4"
-                className="text-center"
               />
             </div>
             <div className="space-y-2">
@@ -114,7 +113,6 @@ const NewtonRaphsonMethods = () => {
                 value={initialX}
                 onChange={(e) => setInitialX(e.target.value)}
                 placeholder="e.g., 0"
-                className="text-center"
               />
             </div>
             <Button 
