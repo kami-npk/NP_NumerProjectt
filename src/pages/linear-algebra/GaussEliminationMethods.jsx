@@ -96,7 +96,7 @@ const GaussEliminationMethods = () => {
         setFormulas(newFormulas);
     };
 
-    const renderMatrix = (matrix, title, highlightCol = -1) => (
+    const renderMatrix = (matrix, title) => (
         <div className="mb-4">
             <h3 className="text-xl font-semibold text-center mb-2">{title}</h3>
             <div className="overflow-x-auto">
@@ -111,18 +111,20 @@ const GaussEliminationMethods = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {matrix.matrix.map((row, i) => (
+                        {matrix.map((row, i) => (
                             <TableRow key={i} className="border-b border-border">
                                 <TableCell className="font-medium text-center h-8 px-1">{i + 1}</TableCell>
                                 {row.map((value, j) => (
                                     <TableCell 
                                         key={j} 
-                                        className={`text-center h-8 px-1 ${j === highlightCol ? 'bg-blue-50/50 dark:bg-blue-900/30' : ''}`}
+                                        className="text-center h-8 px-1"
                                     >
                                         {value.toFixed(4)}
                                     </TableCell>
                                 ))}
-                                <TableCell className="text-center h-8 px-1">{matrix.vector[i].toFixed(4)}</TableCell>
+                                <TableCell className="text-center h-8 px-1">
+                                    {steps[i]?.vector[i]?.toFixed(4) || '0.0000'}
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
