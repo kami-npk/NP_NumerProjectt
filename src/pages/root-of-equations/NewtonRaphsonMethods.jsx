@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { InputForm } from './components/InputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { IterationTable } from './components/IterationTable';
 import { diffEquation, error } from './components/CalculationUtils';
 import { useToast } from "@/components/ui/use-toast";
+import { evaluate } from 'mathjs';
+
+// ... keep existing code (state declarations and helper functions)
 
 const NewtonRaphsonMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -91,40 +96,42 @@ const NewtonRaphsonMethods = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Newton-Raphson Method</h1>
       <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Input</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>Input Equation f(x)</Label>
-              <Input
-                value={equation}
-                onChange={(e) => setEquation(e.target.value)}
-                placeholder="e.g., x^2 - 4"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Initial X</Label>
-              <Input
-                type="number"
-                value={initialX}
-                onChange={(e) => setInitialX(e.target.value)}
-                placeholder="e.g., 0"
-              />
-            </div>
-            <Button 
-              onClick={getRandomEquation} 
-              variant="outline" 
-              className="w-full"
-            >
-              Get Random Equation
-            </Button>
-            <Button onClick={calculateRoot} className="w-full">
-              Solve
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="max-w-md mx-auto">
+          <Card>
+            <CardHeader>
+              <CardTitle>Input</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Input Equation f(x)</Label>
+                <Input
+                  value={equation}
+                  onChange={(e) => setEquation(e.target.value)}
+                  placeholder="e.g., x^2 - 4"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Initial X</Label>
+                <Input
+                  type="number"
+                  value={initialX}
+                  onChange={(e) => setInitialX(e.target.value)}
+                  placeholder="e.g., 0"
+                />
+              </div>
+              <Button 
+                onClick={getRandomEquation} 
+                variant="outline" 
+                className="w-full"
+              >
+                Get Random Equation
+              </Button>
+              <Button onClick={calculateRoot} className="w-full">
+                Solve
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
 
         {result !== null && (
           <>
