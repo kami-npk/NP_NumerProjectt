@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import MatrixInput from './components/MatrixInput';
 
 const GaussEliminationMethods = () => {
     const [Dimension, setDimension] = useState(3);
@@ -23,14 +22,26 @@ const GaussEliminationMethods = () => {
 
     const handleMatrixAChange = (i, j, value) => {
         const updatedMatrixA = [...MatrixA];
-        updatedMatrixA[i][j] = parseFloat(value) || 0;
-        setMatrixA(updatedMatrixA);
+        if (Array.isArray(i)) {
+            // Handle setting entire matrix
+            setMatrixA(i);
+        } else {
+            // Handle setting individual value
+            updatedMatrixA[i][j] = parseFloat(value) || 0;
+            setMatrixA(updatedMatrixA);
+        }
     };
 
     const handleMatrixBChange = (i, value) => {
-        const updatedMatrixB = [...MatrixB];
-        updatedMatrixB[i] = parseFloat(value) || 0;
-        setMatrixB(updatedMatrixB);
+        if (Array.isArray(i)) {
+            // Handle setting entire vector
+            setMatrixB(i);
+        } else {
+            // Handle setting individual value
+            const updatedMatrixB = [...MatrixB];
+            updatedMatrixB[i] = parseFloat(value) || 0;
+            setMatrixB(updatedMatrixB);
+        }
     };
 
     const solveAnswer = () => {
@@ -134,57 +145,14 @@ const GaussEliminationMethods = () => {
                         <CardTitle>Matrix Input</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex justify-center items-center gap-4 mb-4">
-                            <Label htmlFor="dimension">Matrix Dimension:</Label>
-                            <Input
-                                id="dimension"
-                                type="number"
-                                min="2"
-                                max="10"
-                                value={Dimension}
-                                onChange={(e) => setDimension(Number(e.target.value))}
-                                className="w-24"
-                            />
-                        </div>
-
-                        <div className="overflow-x-auto">
-                            <Table className="border border-border w-auto mx-auto">
-                                <TableHeader>
-                                    <TableRow className="bg-muted/50">
-                                        <TableHead className="h-8 px-1 w-20"></TableHead>
-                                        {Array(Dimension).fill().map((_, i) => (
-                                            <TableHead key={i} className="text-center h-8 px-1 w-16">x{i + 1}</TableHead>
-                                        ))}
-                                        <TableHead className="text-center h-8 px-1 w-16">b</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {Array(Dimension).fill().map((_, i) => (
-                                        <TableRow key={i} className="border-b border-border">
-                                            <TableCell className="font-medium h-8 px-1">Row {i + 1}</TableCell>
-                                            {Array(Dimension).fill().map((_, j) => (
-                                                <TableCell key={j} className="p-0">
-                                                    <Input
-                                                        type="number"
-                                                        value={MatrixA[i]?.[j] || ''}
-                                                        onChange={(e) => handleMatrixAChange(i, j, e.target.value)}
-                                                        className="border-0 h-8 text-center w-16"
-                                                    />
-                                                </TableCell>
-                                            ))}
-                                            <TableCell className="p-0">
-                                                <Input
-                                                    type="number"
-                                                    value={MatrixB[i] || ''}
-                                                    onChange={(e) => handleMatrixBChange(i, e.target.value)}
-                                                    className="border-0 h-8 text-center w-16"
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
+                        <MatrixInput
+                            Dimension={Dimension}
+                            MatrixA={MatrixA}
+                            MatrixB={MatrixB}
+                            setDimension={setDimension}
+                            handleMatrixAChange={handleMatrixAChange}
+                            handleMatrixBChange={handleMatrixBChange}
+                        />
 
                         <div className="flex justify-center mt-4">
                             <Button onClick={solveAnswer}>Solve</Button>
