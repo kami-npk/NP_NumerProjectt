@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { evaluate } from 'mathjs';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { InputForm } from './components/InputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { IterationTable } from './components/IterationTable';
-import { evaluate } from 'mathjs';
 import { diffEquation, error } from './components/CalculationUtils';
+import { getRandomEquation } from './utils/getRandomEquation';
 
 const NewtonRaphsonMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -67,6 +69,15 @@ const NewtonRaphsonMethods = () => {
           onInitialXChange={setInitialX}
           onCalculate={calculateRoot}
           result={result}
+          additionalButtons={
+            <Button 
+              onClick={() => getRandomEquation(setEquation)} 
+              variant="outline" 
+              className="w-full"
+            >
+              Get Random Equation
+            </Button>
+          }
         />
 
         {result !== null && (

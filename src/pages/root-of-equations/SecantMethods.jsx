@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { evaluate } from 'mathjs';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SharedInputForm } from './components/SharedInputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { SecantIterationTable } from './components/SecantIterationTable';
+import { getRandomEquation } from './utils/getRandomEquation';
 
 const SecantMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -108,6 +110,13 @@ const SecantMethods = () => {
           placeholder="e.g., 1"
         />
       </div>
+      <Button 
+        onClick={() => getRandomEquation(setEquation, setX0, setX1)} 
+        variant="outline" 
+        className="w-full"
+      >
+        Get Random Equation
+      </Button>
     </>
   );
 
