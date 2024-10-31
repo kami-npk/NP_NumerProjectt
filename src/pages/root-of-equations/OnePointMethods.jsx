@@ -7,7 +7,6 @@ import { useCalculation } from './hooks/useOnePointCalculation';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { IterationTable } from './components/IterationTable';
-import { getRandomEquation } from './utils/getRandomEquation';
 
 const OnePointMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -54,13 +53,6 @@ const OnePointMethods = () => {
                   placeholder="e.g., 0"
                 />
               </div>
-              <Button 
-                onClick={() => getRandomEquation(setEquation)} 
-                variant="outline" 
-                className="w-full"
-              >
-                Get Random Equation
-              </Button>
               <Button type="submit" className="w-full">Solve</Button>
             </form>
           </CardContent>

@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { evaluate } from 'mathjs';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SharedInputForm } from './components/SharedInputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { FalsePositionIterationTable } from './components/FalsePositionIterationTable';
-import { getRandomEquation } from './utils/getRandomEquation';
 
 const FalsePositionMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -90,13 +88,6 @@ const FalsePositionMethods = () => {
           placeholder="e.g., 3"
         />
       </div>
-      <Button 
-        onClick={() => getRandomEquation(setEquation, setXL, setXR)} 
-        variant="outline" 
-        className="w-full"
-      >
-        Get Random Equation
-      </Button>
     </>
   );
 
