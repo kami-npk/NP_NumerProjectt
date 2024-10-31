@@ -24,10 +24,16 @@ const GraphicalMethods = () => {
     try {
       const response = await fetch('http://localhost:8080/rootofequation.php');
       const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       const filteredData = data.filter(item => item.id === "1" || item.id === "2" || item.id === "3");
 
       if (filteredData.length > 0) {
         const randomEquation = filteredData[Math.floor(Math.random() * filteredData.length)];
+        console.log('Fetched equation:', randomEquation); // Debug log
         setEquation(randomEquation.fx);
         setXStart(randomEquation.xl);
         setXEnd(randomEquation.xr);
@@ -35,12 +41,14 @@ const GraphicalMethods = () => {
           title: "Success",
           description: "Equation fetched successfully",
         });
+      } else {
+        throw new Error("No equations found");
       }
     } catch (error) {
       console.error('Error fetching random equation:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch equation",
+        description: "Failed to fetch equation: " + error.message,
         variant: "destructive",
       });
     }
