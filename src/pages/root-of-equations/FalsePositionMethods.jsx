@@ -136,15 +136,25 @@ const FalsePositionMethods = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">False-position Method</h1>
       <div className="space-y-6">
-        <SharedInputForm
-          title="Input"
-          equation={equation}
-          onEquationChange={setEquation}
-          onCalculate={calculateFalsePosition}
-          result={result}
-        >
-          {additionalInputs}
-        </SharedInputForm>
+        <Card>
+          <CardHeader>
+            <CardTitle>Input</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Input Equation f(x)</Label>
+              <Input
+                value={equation}
+                onChange={(e) => setEquation(e.target.value)}
+                placeholder="e.g., x^2 - 4"
+              />
+            </div>
+            {additionalInputs}
+            <Button onClick={calculateFalsePosition} className="w-full">
+              Solve
+            </Button>
+          </CardContent>
+        </Card>
 
         {result !== null && (
           <>

@@ -85,7 +85,6 @@ const OnePointMethods = () => {
                   placeholder="e.g., 0"
                 />
               </div>
-              <Button type="submit" className="w-full">Solve</Button>
               <Button 
                 type="button"
                 onClick={getRandomEquation} 
@@ -94,6 +93,7 @@ const OnePointMethods = () => {
               >
                 Get Random Equation
               </Button>
+              <Button type="submit" className="w-full">Solve</Button>
             </form>
           </CardContent>
         </Card>

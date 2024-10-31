@@ -66,8 +66,8 @@ const BisectionMethods = () => {
 
     do {
       xm = (xlNum + xrNum) / 2.0;
-      fXr = evaluate(equation.replace(/−/g, '-'), { x: xrNum });
-      fXm = evaluate(equation.replace(/−/g, '-'), { x: xm });
+      const fXr = evaluate(equation, { x: xrNum });
+      const fXm = evaluate(equation, { x: xm });
 
       iter++;
       if (fXm * fXr > 0) {
@@ -93,7 +93,7 @@ const BisectionMethods = () => {
     for (let x = parseFloat(xl); x <= parseFloat(xr); x += step) {
       graphData.push({
         x: x,
-        y: evaluate(equation.replace(/−/g, '-'), { x: x })
+        y: evaluate(equation, { x: x })
       });
     }
     setGraphData(graphData);
@@ -121,13 +121,6 @@ const BisectionMethods = () => {
           placeholder="e.g., 3"
         />
       </div>
-      <Button 
-        onClick={getRandomEquation} 
-        variant="outline" 
-        className="w-full"
-      >
-        Get Random Equation
-      </Button>
     </>
   );
 
@@ -135,45 +128,75 @@ const BisectionMethods = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Bisection Method</h1>
       <div className="space-y-6">
-        <SharedInputForm
-          title="Input"
-          equation={equation}
-          onEquationChange={setEquation}
-          onCalculate={calculateBisection}
-          result={result}
-        >
-          {additionalInputs}
-        </SharedInputForm>
+        <Card>
+          <CardHeader>
+            <CardTitle>Input</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Input Equation f(x)</Label>
+              <Input
+                value={equation}
+                onChange={(e) => setEquation(e.target.value)}
+                placeholder="e.g., x^2 - 4"
+              />
+            </div>
+            {additionalInputs}
+            <Button 
+              onClick={getRandomEquation} 
+              variant="outline" 
+              className="w-full"
+            >
+              Get Random Equation
+            </Button>
+            <Button onClick={calculateBisection} className="w-full">
+              Solve
+            </Button>
+          </CardContent>
+        </Card>
 
         {result !== null && (
-          <>
-            <Card>
-              <CardHeader>
-                <CardTitle>Equation Graph</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <EquationGraph data={graphData} />
-              </CardContent>
-            </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Result</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Root approximation: {result.toPrecision(6)}</p>
+            </CardContent>
+          </Card>
+        )}
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Error Graph</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ErrorGraph data={errorData} />
-              </CardContent>
-            </Card>
+        {iterations.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Iterations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <BisectionIterationTable data={iterations} />
+            </CardContent>
+          </Card>
+        )}
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Iteration Table</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <BisectionIterationTable data={iterations} />
-              </CardContent>
-            </Card>
-          </>
+        {graphData.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Graph</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <EquationGraph data={graphData} />
+            </CardContent>
+          </Card>
+        )}
+
+        {errorData.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Error Graph</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ErrorGraph data={errorData} />
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

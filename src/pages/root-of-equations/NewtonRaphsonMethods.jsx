@@ -91,22 +91,40 @@ const NewtonRaphsonMethods = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Newton-Raphson Method</h1>
       <div className="space-y-6">
-        <InputForm
-          equation={equation}
-          initialX={initialX}
-          onEquationChange={setEquation}
-          onInitialXChange={setInitialX}
-          onCalculate={calculateRoot}
-          result={result}
-        />
-        
-        <Button 
-          onClick={getRandomEquation} 
-          variant="outline" 
-          className="w-full max-w-md mx-auto block"
-        >
-          Get Random Equation
-        </Button>
+        <Card>
+          <CardHeader>
+            <CardTitle>Input</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Input Equation f(x)</Label>
+              <Input
+                value={equation}
+                onChange={(e) => setEquation(e.target.value)}
+                placeholder="e.g., x^2 - 4"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Initial X</Label>
+              <Input
+                type="number"
+                value={initialX}
+                onChange={(e) => setInitialX(e.target.value)}
+                placeholder="e.g., 0"
+              />
+            </div>
+            <Button 
+              onClick={getRandomEquation} 
+              variant="outline" 
+              className="w-full"
+            >
+              Get Random Equation
+            </Button>
+            <Button onClick={calculateRoot} className="w-full">
+              Solve
+            </Button>
+          </CardContent>
+        </Card>
 
         {result !== null && (
           <>
