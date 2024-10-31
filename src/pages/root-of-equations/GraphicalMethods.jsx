@@ -33,7 +33,7 @@ const GraphicalMethods = () => {
 
       if (filteredData.length > 0) {
         const randomEquation = filteredData[Math.floor(Math.random() * filteredData.length)];
-        console.log('Fetched equation:', randomEquation); // Debug log
+        console.log('Fetched equation:', randomEquation);
         setEquation(randomEquation.fx);
         setXStart(randomEquation.xl);
         setXEnd(randomEquation.xr);
@@ -115,8 +115,8 @@ const GraphicalMethods = () => {
       </div>
       <Button 
         onClick={getRandomEquation} 
+        variant="outline" 
         className="w-full"
-        variant="outline"
       >
         Get Equation
       </Button>

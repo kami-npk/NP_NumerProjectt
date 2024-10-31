@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
 
 export const SharedInputForm = ({ 
   title,
@@ -13,8 +12,6 @@ export const SharedInputForm = ({
   children,
   result 
 }) => {
-  const { toast } = useToast();
-
   return (
     <Card className="max-w-md mx-auto">
       <CardHeader>
