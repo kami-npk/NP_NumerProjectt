@@ -128,75 +128,73 @@ const BisectionMethods = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Bisection Method</h1>
       <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Input</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>Input Equation f(x)</Label>
-              <Input
-                value={equation}
-                onChange={(e) => setEquation(e.target.value)}
-                placeholder="e.g., x^2 - 4"
-              />
-            </div>
-            {additionalInputs}
-            <Button 
-              onClick={getRandomEquation} 
-              variant="outline" 
-              className="w-full"
-            >
-              Get Random Equation
-            </Button>
-            <Button onClick={calculateBisection} className="w-full">
-              Solve
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="max-w-md mx-auto">
+          <Card>
+            <CardHeader>
+              <CardTitle>Input</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Input Equation f(x)</Label>
+                <Input
+                  value={equation}
+                  onChange={(e) => setEquation(e.target.value)}
+                  placeholder="e.g., x^2 - 4"
+                />
+              </div>
+              {additionalInputs}
+              <Button 
+                onClick={getRandomEquation} 
+                variant="outline" 
+                className="w-full"
+              >
+                Get Random Equation
+              </Button>
+              <Button onClick={calculateBisection} className="w-full">
+                Solve
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
 
         {result !== null && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Result</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>Root approximation: {result.toPrecision(6)}</p>
-            </CardContent>
-          </Card>
-        )}
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>Result</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>Root approximation: {result.toPrecision(6)}</p>
+              </CardContent>
+            </Card>
 
-        {iterations.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Iterations</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <BisectionIterationTable data={iterations} />
-            </CardContent>
-          </Card>
-        )}
+            <Card>
+              <CardHeader>
+                <CardTitle>Iterations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <BisectionIterationTable data={iterations} />
+              </CardContent>
+            </Card>
 
-        {graphData.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Graph</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <EquationGraph data={graphData} />
-            </CardContent>
-          </Card>
-        )}
+            <Card>
+              <CardHeader>
+                <CardTitle>Graph</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <EquationGraph data={graphData} />
+              </CardContent>
+            </Card>
 
-        {errorData.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Error Graph</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ErrorGraph data={errorData} />
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Error Graph</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ErrorGraph data={errorData} />
+              </CardContent>
+            </Card>
+          </>
         )}
       </div>
     </div>
