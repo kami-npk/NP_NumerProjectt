@@ -48,19 +48,19 @@ const SecantMethods = () => {
   const error = (xold, xnew) => Math.abs((xnew - xold) / xnew) * 100;
 
   const calculateRoot = () => {
-    const x0Num = parseFloat(x0);
-    const x1Num = parseFloat(x1);
-    const newIterations = [];
-    const newGraphData = [];
-    const newErrorData = [];
-    
-    let xOld = x0Num;
-    let xNew = x1Num;
-    let iter = 0;
-    const MAX_ITER = 50;
-    const EPSILON = 0.000001;
-
     try {
+      const x0Num = parseFloat(x0);
+      const x1Num = parseFloat(x1);
+      const newIterations = [];
+      const newGraphData = [];
+      const newErrorData = [];
+      
+      let xOld = x0Num;
+      let xNew = x1Num;
+      let iter = 0;
+      const MAX_ITER = 50;
+      const EPSILON = 0.000001;
+
       // Add initial values as first iteration
       newIterations.push({
         iteration: iter,
@@ -109,8 +109,18 @@ const SecantMethods = () => {
       setIterations(newIterations);
       setGraphData(newGraphData);
       setErrorData(newErrorData);
+
+      toast({
+        title: "Calculation complete",
+        description: "Root found successfully.",
+      });
     } catch (error) {
       console.error('Error in calculation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to calculate root. Please check your equation and input values.",
+        variant: "destructive",
+      });
     }
   };
 
