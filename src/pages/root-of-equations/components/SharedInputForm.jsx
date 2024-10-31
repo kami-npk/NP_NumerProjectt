@@ -29,9 +29,7 @@ export const SharedInputForm = ({
             />
           </div>
           {children}
-          <Button onClick={onCalculate} className="w-full">
-            Solve
-          </Button>
+          <Button onClick={onCalculate} className="w-full">Solve</Button>
           {result !== null && (
             <div className="text-center mt-4">
               <p className="font-semibold">Answer: {result.toPrecision(7)}</p>
