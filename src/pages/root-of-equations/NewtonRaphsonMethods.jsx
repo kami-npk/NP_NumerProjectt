@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { InputForm } from './components/InputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { IterationTable } from './components/IterationTable';
 import { diffEquation, error } from './components/CalculationUtils';
 import { useToast } from "@/components/ui/use-toast";
-import { evaluate } from 'mathjs';
 
 const NewtonRaphsonMethods = () => {
   const [equation, setEquation] = useState("x^2 - 4");
@@ -92,7 +90,7 @@ const NewtonRaphsonMethods = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Newton-Raphson Method</h1>
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Input</CardTitle>
@@ -129,16 +127,7 @@ const NewtonRaphsonMethods = () => {
         </Card>
 
         {result !== null && (
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Result</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center font-semibold">Answer: {result.toPrecision(7)}</p>
-              </CardContent>
-            </Card>
-
+          <>
             <Card>
               <CardHeader>
                 <CardTitle>Equation Graph</CardTitle>
@@ -165,7 +154,7 @@ const NewtonRaphsonMethods = () => {
                 <IterationTable data={iterations} />
               </CardContent>
             </Card>
-          </div>
+          </>
         )}
       </div>
     </div>

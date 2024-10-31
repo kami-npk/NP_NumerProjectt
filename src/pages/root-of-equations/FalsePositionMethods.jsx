@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SharedInputForm } from './components/SharedInputForm';
 import { EquationGraph } from './components/EquationGraph';
 import { ErrorGraph } from './components/ErrorGraph';
 import { FalsePositionIterationTable } from './components/FalsePositionIterationTable';
@@ -134,7 +135,7 @@ const FalsePositionMethods = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">False-position Method</h1>
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Input</CardTitle>
@@ -146,38 +147,9 @@ const FalsePositionMethods = () => {
                 value={equation}
                 onChange={(e) => setEquation(e.target.value)}
                 placeholder="e.g., x^2 - 4"
-                className="text-center"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="xl">X Left (XL)</Label>
-              <Input
-                id="xl"
-                type="number"
-                value={xl}
-                onChange={(e) => setXL(e.target.value)}
-                placeholder="e.g., 0"
-                className="text-center"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="xr">X Right (XR)</Label>
-              <Input
-                id="xr"
-                type="number"
-                value={xr}
-                onChange={(e) => setXR(e.target.value)}
-                placeholder="e.g., 3"
-                className="text-center"
-              />
-            </div>
-            <Button 
-              onClick={getRandomEquation} 
-              variant="outline" 
-              className="w-full"
-            >
-              Get Random Equation
-            </Button>
+            {additionalInputs}
             <Button onClick={calculateFalsePosition} className="w-full">
               Solve
             </Button>
@@ -185,16 +157,7 @@ const FalsePositionMethods = () => {
         </Card>
 
         {result !== null && (
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Result</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center font-semibold">Answer: {result.toPrecision(7)}</p>
-              </CardContent>
-            </Card>
-
+          <>
             <Card>
               <CardHeader>
                 <CardTitle>Equation Graph</CardTitle>
@@ -221,7 +184,7 @@ const FalsePositionMethods = () => {
                 <FalsePositionIterationTable data={iterations} />
               </CardContent>
             </Card>
-          </div>
+          </>
         )}
       </div>
     </div>
