@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { PointsTable } from './components/PointsTable';
 import { DividedDifferenceTable } from './components/DividedDifferenceTable';
+import { useToast } from "@/components/ui/use-toast";
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -17,12 +18,46 @@ const NewtonDividedDifference = () => {
   const [result, setResult] = useState(null);
   const [equation, setEquation] = useState("");
   const [answerEquation, setAnswerEquation] = useState("");
+  const { toast } = useToast();
 
   // Initialize points array when pointsAmount changes
   useEffect(() => {
     setPoints(Array(pointsAmount).fill().map(() => ({ x: 0, fx: 0 })));
     setSelectedPoints(Array(pointsAmount).fill(false));
   }, [pointsAmount]);
+
+  const getRandomEquation = async () => {
+    try {
+      const response = await fetch('http://localhost:80/interpolation.php');
+      const data = await response.json();
+      
+      const randomIndex = Math.floor(Math.random() * data.length);
+      const equation = data[randomIndex];
+      
+      // Create new points array from the random equation
+      const newPoints = Array(5).fill().map((_, index) => ({
+        x: parseFloat(equation[`${index + 1}x`]),
+        fx: parseFloat(equation[`${index + 1}f(x)`])
+      }));
+      
+      setPoints(newPoints);
+      setSelectedPoints(Array(5).fill(true));
+      setPointsAmount(5);
+      setFindX(parseFloat(equation.find_x));
+      
+      toast({
+        title: "Success",
+        description: "Random equation loaded successfully",
+      });
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch random equation",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handlePointChange = (index, field, value) => {
     const newPoints = [...points];
@@ -110,6 +145,14 @@ const NewtonDividedDifference = () => {
                   min="2"
                 />
               </div>
+
+              <Button 
+                onClick={getRandomEquation} 
+                variant="outline" 
+                className="w-full max-w-md"
+              >
+                Get Random Equation
+              </Button>
             </div>
 
             <PointsTable
@@ -134,7 +177,7 @@ const NewtonDividedDifference = () => {
         {dividedDiffTable.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-center">Solution</CardTitle>
+              <CardTitle>Solution</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
