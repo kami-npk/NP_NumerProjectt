@@ -3,9 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { PointsTable } from './components/PointsTable';
 import { useToast } from "@/components/ui/use-toast";
-import { LagrangeSolutionDisplay } from './components/LagrangeSolutionDisplay';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -42,12 +42,12 @@ const LagrangeInterpolation = () => {
       let numerator = '';
       let denominator = '';
       let termValue = 1;
-
+      
       for (let j = 0; j < selectedData.length; j++) {
         if (i !== j) {
           // Calculate the actual value
           termValue *= (findX - selectedData[j].x) / (selectedData[i].x - selectedData[j].x);
-
+          
           // Build the equation strings
           numerator += `(x_${j} - x)`;
           denominator += `(x_${j} - x_${i})`;
@@ -60,7 +60,7 @@ const LagrangeInterpolation = () => {
 
       // Create the LaTeX equation for this L term
       const lEquation = `L_${i} = \\frac{${numerator}}{${denominator}} = \\frac{`;
-
+      
       // Add the numerical values
       let numValues = '';
       let denValues = '';
@@ -70,7 +70,7 @@ const LagrangeInterpolation = () => {
           denValues += `(${selectedData[j].x}-${selectedData[i].x})`;
         }
       }
-
+      
       equations.push(katex.renderToString(
         `${lEquation}${numValues}}{${denValues}} = ${termValue.toFixed(6)}`,
         { displayMode: true }
@@ -96,21 +96,21 @@ const LagrangeInterpolation = () => {
     try {
       const response = await fetch('http://localhost:80/interpolation.php');
       const data = await response.json();
-
+      
       const randomIndex = Math.floor(Math.random() * data.length);
       const equation = data[randomIndex];
-
+      
       // Create new points array from the random equation
       const newPoints = Array(5).fill().map((_, index) => ({
         x: parseFloat(equation[`${index + 1}x`]),
         fx: parseFloat(equation[`${index + 1}f(x)`])
       }));
-
+      
       setPoints(newPoints);
       setSelectedPoints(Array(5).fill(true));
       setPointsAmount(5);
       setFindX(parseFloat(equation.find_x));
-
+      
       toast({
         title: "Success",
         description: "Random equation loaded successfully",
@@ -142,60 +142,73 @@ const LagrangeInterpolation = () => {
       <h1 className="text-3xl font-bold text-center mb-8">Lagrange Interpolation</h1>
       
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="max-w-md mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle>Input</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-full max-w-md space-y-2">
-                  <Label>Find f(x) where x is:</Label>
-                  <Input
-                    type="number"
-                    value={findX}
-                    onChange={(e) => setFindX(parseFloat(e.target.value))}
-                  />
-                </div>
-
-                <div className="w-full max-w-md space-y-2">
-                  <Label>Points Amount:</Label>
-                  <Input
-                    type="number"
-                    value={pointsAmount}
-                    onChange={(e) => setPointsAmount(parseInt(e.target.value))}
-                    min="2"
-                  />
-                </div>
-
-                <Button 
-                  onClick={getRandomEquation} 
-                  variant="outline" 
-                  className="w-full max-w-md"
-                >
-                  Get Random Equation
-                </Button>
+        <Card>
+          <CardHeader>
+            <CardTitle>Input</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-full max-w-md space-y-2">
+                <Label>Find f(x) where x is:</Label>
+                <Input
+                  type="number"
+                  value={findX}
+                  onChange={(e) => setFindX(parseFloat(e.target.value))}
+                />
               </div>
 
-              <PointsTable
-                points={points}
-                selectedPoints={selectedPoints}
-                onPointChange={handlePointChange}
-                onSelectionChange={handleSelectionChange}
-              />
+              <div className="w-full max-w-md space-y-2">
+                <Label>Points Amount:</Label>
+                <Input
+                  type="number"
+                  value={pointsAmount}
+                  onChange={(e) => setPointsAmount(parseInt(e.target.value))}
+                  min="2"
+                />
+              </div>
 
-              <Button onClick={calculateLagrange} className="w-full">
-                Calculate
+              <Button 
+                onClick={getRandomEquation} 
+                variant="outline" 
+                className="w-full max-w-md"
+              >
+                Get Random Equation
               </Button>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+
+            <PointsTable
+              points={points}
+              selectedPoints={selectedPoints}
+              onPointChange={handlePointChange}
+              onSelectionChange={handleSelectionChange}
+            />
+
+            <Button onClick={calculateLagrange} className="w-full">
+              Calculate
+            </Button>
+          </CardContent>
+        </Card>
 
         {result !== null && (
-          <LagrangeSolutionDisplay 
-            equation={equation}
-            answerEquation={answerEquation}
-          />
+          <Card>
+            <CardHeader>
+              <CardTitle>Solution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[500px] w-full rounded-md border p-4">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-base font-semibold mb-4">Interpolation Equations</h3>
+                    <div className="space-y-4 text-sm" dangerouslySetInnerHTML={{ __html: equation }} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold mb-4">Final Result</h3>
+                    <div className="text-sm" dangerouslySetInnerHTML={{ __html: answerEquation }} />
+                  </div>
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
