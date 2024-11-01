@@ -6,6 +6,7 @@ import 'katex/dist/katex.min.css';
 import { LinearRegressionForm } from './components/LinearRegressionForm';
 import { LinearRegressionTable } from './components/LinearRegressionTable';
 import { LinearRegressionContent } from './components/LinearRegressionContent';
+import { LinearRegressionInput } from './components/LinearRegressionInput';
 
 const LinearRegression = () => {
   const [findX, setFindX] = useState(4.5);
@@ -78,16 +79,33 @@ const LinearRegression = () => {
       <h1 className="text-3xl font-bold text-center mb-8">Linear Regression</h1>
       
       <div className="max-w-3xl mx-auto space-y-6">
-        <LinearRegressionForm
-          findX={findX}
-          setFindX={setFindX}
-          pointsAmount={pointsAmount}
-          setPointsAmount={setPointsAmount}
-          points={points}
-          handlePointChange={handlePointChange}
-          calculateRegression={calculateRegression}
-          result={result}
-        />
+        <Card>
+          <CardHeader>
+            <CardTitle>Input</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <LinearRegressionInput
+              findX={findX}
+              setFindX={setFindX}
+              pointsAmount={pointsAmount}
+              setPointsAmount={setPointsAmount}
+              setPoints={setPoints}
+              handlePointChange={handlePointChange}
+              calculateRegression={calculateRegression}
+            />
+
+            <LinearRegressionForm
+              findX={findX}
+              setFindX={setFindX}
+              pointsAmount={pointsAmount}
+              setPointsAmount={setPointsAmount}
+              points={points}
+              handlePointChange={handlePointChange}
+              calculateRegression={calculateRegression}
+              result={result}
+            />
+          </CardContent>
+        </Card>
 
         {result !== null && (
           <>
