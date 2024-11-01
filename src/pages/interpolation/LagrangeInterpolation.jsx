@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { PointsTable } from './components/PointsTable';
+import { useToast } from "@/components/ui/use-toast";
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -15,6 +16,7 @@ const LagrangeInterpolation = () => {
   const [result, setResult] = useState(null);
   const [equation, setEquation] = useState("");
   const [answerEquation, setAnswerEquation] = useState("");
+  const { toast } = useToast();
 
   // Initialize points array when pointsAmount changes
   useEffect(() => {
@@ -22,12 +24,42 @@ const LagrangeInterpolation = () => {
     setSelectedPoints(Array(pointsAmount).fill(false));
   }, [pointsAmount]);
 
+  const getRandomEquation = async () => {
+    try {
+      const response = await fetch('http://localhost:80/interpolation.php');
+      const data = await response.json();
+      
+      const randomIndex = Math.floor(Math.random() * data.length);
+      const equation = data[randomIndex];
+      
+      // Create new points array from the random equation
+      const newPoints = Array(5).fill().map((_, index) => ({
+        x: parseFloat(equation[`${index + 1}x`]),
+        fx: parseFloat(equation[`${index + 1}f(x)`])
+      }));
+      
+      setPoints(newPoints);
+      setSelectedPoints(Array(5).fill(true));
+      setPointsAmount(5);
+      setFindX(parseFloat(equation.find_x));
+      
+      toast({
+        title: "Success",
+        description: "Random equation loaded successfully",
+      });
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch random equation",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handlePointChange = (index, field, value) => {
     const newPoints = [...points];
-    if (!newPoints[index]) {
-      newPoints[index] = { x: 0, fx: 0 };
-    }
-    newPoints[index][field] = parseFloat(value) || 0;
+    newPoints[index] = { ...newPoints[index], [field]: parseFloat(value) || 0 };
     setPoints(newPoints);
   };
 
@@ -94,6 +126,14 @@ const LagrangeInterpolation = () => {
                   min="2"
                 />
               </div>
+
+              <Button 
+                onClick={getRandomEquation} 
+                variant="outline" 
+                className="w-full max-w-md"
+              >
+                Get Random Equation
+              </Button>
             </div>
 
             <PointsTable
@@ -115,20 +155,19 @@ const LagrangeInterpolation = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Solution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold mb-2">Interpolation Equation</h3>
-              <p>{equation}</p>
-              <div className="text-center">
-                <p className="font-semibold">Result: {result !== null ? result.toFixed(4) : ''}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {result !== null && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Solution</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-lg font-semibold mb-2">Interpolation Equation</div>
+              <div>{equation}</div>
+              <div className="text-lg font-semibold mb-2">Result</div>
+              <div>{result !== null ? result.toFixed(4) : ''}</div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
