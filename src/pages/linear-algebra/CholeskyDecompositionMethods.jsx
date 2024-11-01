@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CholeskyMatrixInput from './components/CholeskyMatrixInput';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { MatrixDisplay } from "./components/MatrixDisplay";
 import { calculateCholesky, solveSystem } from "./components/CholeskyCalculation";
 
 const CholeskyDecompositionMethods = () => {
@@ -58,34 +59,35 @@ const CholeskyDecompositionMethods = () => {
                     setMatrixB={setMatrixB}
                 />
 
-                {solution.X.length > 0 && (
+                {steps.length > 0 && (
                     <Card className="bg-muted">
                         <CardHeader className="pb-4">
                             <CardTitle>Solution</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="grid grid-cols-3 gap-4">
-                                <h4 className="text-lg font-medium text-center mb-2">Matrix L</h4>
-                                <Table className="border border-border w-auto mx-auto">
-                                    <TableHeader>
-                                        <TableRow className="bg-muted/50">
-                                            <TableHead className="h-8 px-1 w-12"></TableHead>
-                                            {Array(Dimension).fill().map((_, i) => (
-                                                <TableHead key={i} className="text-center h-8 px-1 w-16">L{i + 1}</TableHead>
-                                            ))}
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {MatrixL.map((row, i) => (
-                                            <TableRow key={i} className="border-b border-border">
-                                                <TableCell className="font-medium text-center h-8 px-1">{`Row ${i + 1}`}</TableCell>
-                                                {row.map((value, j) => (
-                                                    <TableCell key={j} className="text-center h-8 px-1">{value.toFixed(4)}</TableCell>
-                                                ))}
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                <MatrixDisplay title="Matrix A" matrix={MatrixA} dimension={Dimension} />
+                                <MatrixDisplay title="Matrix L" matrix={MatrixL} dimension={Dimension} type="L" />
+                                <MatrixDisplay title="Matrix L Transpose" matrix={MatrixL} dimension={Dimension} type="LT" />
+                            </div>
+
+                            <div>
+                                <h4 className="text-lg font-medium text-center mb-2">Matrix L (Values)</h4>
+                                <MatrixDisplay matrix={MatrixL} dimension={Dimension} type="values" />
+                            </div>
+
+                            <div>
+                                <h4 className="text-lg font-medium text-center mb-2">Y Values (From LY = B)</h4>
+                                <div className="flex justify-center gap-8">
+                                    {solution.Y.map((value, index) => (
+                                        <div key={index} className="text-lg">
+                                            y<sub>{index + 1}</sub> = {value.toFixed(4)}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
                                 <h4 className="text-lg font-medium text-center mb-2">Solution (From L^TX = Y)</h4>
                                 <div className="flex justify-center gap-8">
                                     {solution.X.map((value, index) => (
