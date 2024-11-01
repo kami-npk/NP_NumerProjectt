@@ -195,15 +195,15 @@ const LagrangeInterpolation = () => {
               <CardTitle>Solution</CardTitle>
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-[500px] w-full rounded-md border p-4">
-                <div className="space-y-6">
+              <ScrollArea className="h-[500px] w-full rounded-md border border-border p-4 relative">
+                <div className="space-y-6 pr-4">
                   <div>
                     <h3 className="text-base font-semibold mb-4">Interpolation Equations</h3>
-                    <div className="space-y-4 text-sm" dangerouslySetInnerHTML={{ __html: equation }} />
+                    <div className="space-y-4 text-sm overflow-x-auto" dangerouslySetInnerHTML={{ __html: equation }} />
                   </div>
                   <div>
                     <h3 className="text-base font-semibold mb-4">Final Result</h3>
-                    <div className="text-sm" dangerouslySetInnerHTML={{ __html: answerEquation }} />
+                    <div className="text-sm overflow-x-auto" dangerouslySetInnerHTML={{ __html: answerEquation }} />
                   </div>
                 </div>
               </ScrollArea>
