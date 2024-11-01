@@ -24,6 +24,73 @@ const LagrangeInterpolation = () => {
     setSelectedPoints(Array(pointsAmount).fill(false));
   }, [pointsAmount]);
 
+  const calculateLagrange = () => {
+    const selectedData = points.filter((_, i) => selectedPoints[i]);
+    if (selectedData.length < 2) {
+      alert("Please select at least 2 points");
+      return;
+    }
+
+    let result = 0;
+    let equations = [];
+    let finalEquation = `f(${findX}) = `;
+    let terms = [];
+
+    // Calculate each L term
+    for (let i = 0; i < selectedData.length; i++) {
+      let numerator = '';
+      let denominator = '';
+      let termValue = 1;
+      
+      for (let j = 0; j < selectedData.length; j++) {
+        if (i !== j) {
+          // Calculate the actual value
+          termValue *= (findX - selectedData[j].x) / (selectedData[i].x - selectedData[j].x);
+          
+          // Build the equation strings
+          numerator += `(x_${j} - x)`;
+          denominator += `(x_${j} - x_${i})`;
+        }
+      }
+
+      // Store the term value for final calculation
+      terms.push(termValue);
+      result += termValue * selectedData[i].fx;
+
+      // Create the LaTeX equation for this L term
+      const lEquation = `L_${i} = \\frac{${numerator}}{${denominator}} = \\frac{`;
+      
+      // Add the numerical values
+      let numValues = '';
+      let denValues = '';
+      for (let j = 0; j < selectedData.length; j++) {
+        if (i !== j) {
+          numValues += `(${selectedData[j].x}-${findX})`;
+          denValues += `(${selectedData[j].x}-${selectedData[i].x})`;
+        }
+      }
+      
+      equations.push(katex.renderToString(
+        `${lEquation}${numValues}}{${denValues}} = ${termValue.toFixed(6)}`,
+        { displayMode: true }
+      ));
+    }
+
+    // Build the final equation
+    let finalCalc = 'f(' + findX + ')=';
+    for (let i = 0; i < selectedData.length; i++) {
+      finalCalc += `(${terms[i].toFixed(6)})(${selectedData[i].fx})`;
+      if (i < selectedData.length - 1) finalCalc += '+';
+    }
+    finalCalc += `=${result.toFixed(6)}`;
+
+    const renderedFinalEq = katex.renderToString(finalCalc, { displayMode: true });
+
+    setEquation(equations.join(''));
+    setAnswerEquation(renderedFinalEq);
+    setResult(result);
+  };
+
   const getRandomEquation = async () => {
     try {
       const response = await fetch('http://localhost:80/interpolation.php');
@@ -67,34 +134,6 @@ const LagrangeInterpolation = () => {
     const newSelected = [...selectedPoints];
     newSelected[index] = !newSelected[index];
     setSelectedPoints(newSelected);
-  };
-
-  const calculateLagrange = () => {
-    const selectedData = points.filter((_, i) => selectedPoints[i]);
-    if (selectedData.length < 2) {
-      alert("Please select at least 2 points");
-      return;
-    }
-
-    let result = 0;
-    let equation = "";
-
-    for (let i = 0; i < selectedData.length; i++) {
-      let term = 1;
-      let Li = `L${i + 1}`;
-      
-      for (let j = 0; j < selectedData.length; j++) {
-        if (i !== j) {
-          term *= (findX - selectedData[j].x) / (selectedData[i].x - selectedData[j].x);
-        }
-      }
-      
-      result += term * selectedData[i].fx;
-      equation += `${Li} = ${term.toFixed(4)}, `;
-    }
-
-    setResult(result);
-    setEquation(equation.slice(0, -2));
   };
 
   return (
@@ -147,11 +186,6 @@ const LagrangeInterpolation = () => {
               Calculate
             </Button>
 
-            {result !== null && (
-              <div className="text-center font-semibold">
-                Result: {typeof result === 'number' ? result.toFixed(4) : result}
-              </div>
-            )}
           </CardContent>
         </Card>
 
@@ -161,10 +195,14 @@ const LagrangeInterpolation = () => {
               <CardTitle>Solution</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="text-lg font-semibold mb-2">Interpolation Equation</div>
-              <div>{equation}</div>
-              <div className="text-lg font-semibold mb-2">Result</div>
-              <div>{result !== null ? result.toFixed(4) : ''}</div>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Interpolation Equations</h3>
+                <div className="space-y-4" dangerouslySetInnerHTML={{ __html: equation }} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Final Result</h3>
+                <div dangerouslySetInnerHTML={{ __html: answerEquation }} />
+              </div>
             </CardContent>
           </Card>
         )}
