@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { fetchRandomEquation } from '../utils/accurateDifferentiationUtils';
 
 export const AccurateDifferentiationForm = ({
   equation,
@@ -19,6 +21,29 @@ export const AccurateDifferentiationForm = ({
   onCalculate,
   result
 }) => {
+  const { toast } = useToast();
+
+  const getRandomEquation = async () => {
+    try {
+      const data = await fetchRandomEquation();
+      setEquation(data['f(x)']);
+      setX(data.x);
+      setH(data.h);
+      
+      toast({
+        title: "Success",
+        description: "Random equation loaded successfully",
+      });
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch random equation",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Card className="mb-8">
       <CardHeader>
@@ -63,9 +88,6 @@ export const AccurateDifferentiationForm = ({
             onChange={(e) => setEquation(e.target.value)}
             placeholder="e.g., x^2"
           />
-          <p className="text-sm text-muted-foreground">
-            Ensure proper arithmetic syntax.
-          </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -87,6 +109,14 @@ export const AccurateDifferentiationForm = ({
             />
           </div>
         </div>
+
+        <Button 
+          onClick={getRandomEquation} 
+          variant="outline" 
+          className="w-full"
+        >
+          Get Random Equation
+        </Button>
 
         <Button onClick={onCalculate} className="w-full">
           Solve
