@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { InputForm } from './components/InputForm';
+import { TrapezoidalInputForm } from './components/TrapezoidalInputForm';
 import { calculateTrapezoidalArea } from './components/TrapezoidalCalculation';
 import { TrapezoidalGraph } from './components/TrapezoidalGraph';
 import katex from 'katex';
@@ -30,18 +30,24 @@ const TrapezoidalRule = () => {
       
       <div className="flex flex-col items-center space-y-8">
         <div className="w-full max-w-md">
-          <InputForm
-            equation={equation}
-            a={a}
-            b={b}
-            n={n}
-            onEquationChange={setEquation}
-            onAChange={setA}
-            onBChange={setB}
-            onNChange={setN}
-            onCalculate={handleCalculate}
-            result={result}
-          />
+          <Card>
+            <CardHeader>
+              <CardTitle>Input</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TrapezoidalInputForm
+                equation={equation}
+                a={a}
+                b={b}
+                n={n}
+                onEquationChange={setEquation}
+                onAChange={setA}
+                onBChange={setB}
+                onNChange={setN}
+                onCalculate={handleCalculate}
+              />
+            </CardContent>
+          </Card>
         </div>
         
         {(solution || result) && (
