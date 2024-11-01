@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { MultipleRegressionTable } from './components/MultipleRegressionTable';
+import { MultipleRegressionContent } from './components/MultipleRegressionContent';
+import { MultipleRegressionInput } from './components/MultipleRegressionInput';
 import { calculateMultipleRegression } from './components/MultipleRegressionCalculation';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
@@ -147,46 +147,15 @@ const MultipleRegression = () => {
             <CardTitle>Input</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-4">
-              <div>
-                <Label>Number of Variables (k)</Label>
-                <Input
-                  type="number"
-                  value={K}
-                  onChange={(e) => setK(parseInt(e.target.value) || 2)}
-                  min="2"
-                />
-              </div>
-
-              <div>
-                <Label>Points Amount</Label>
-                <Input
-                  type="number"
-                  value={pointsAmount}
-                  onChange={(e) => setPointsAmount(parseInt(e.target.value) || 2)}
-                  min="2"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Find f(x) where x is:</Label>
-                <div className="grid gap-2">
-                  {findX.map((x, i) => (
-                    <Input
-                      key={i}
-                      type="number"
-                      value={x}
-                      onChange={(e) => {
-                        const newFindX = [...findX];
-                        newFindX[i] = parseFloat(e.target.value) || 0;
-                        setFindX(newFindX);
-                      }}
-                      placeholder={`x${i + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
+            <MultipleRegressionInput
+              K={K}
+              setK={setK}
+              findX={findX}
+              setFindX={setFindX}
+              pointsAmount={pointsAmount}
+              setPointsAmount={setPointsAmount}
+              setPoints={setPoints}
+            />
 
             <MultipleRegressionTable
               points={points}
@@ -207,19 +176,7 @@ const MultipleRegression = () => {
         </Card>
 
         {result !== null && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Solution</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-4 text-center">
-                <div dangerouslySetInnerHTML={{ __html: equations.matrix }} />
-                <div dangerouslySetInnerHTML={{ __html: equations.substituted }} />
-                <div dangerouslySetInnerHTML={{ __html: equations.regression }} />
-                <div dangerouslySetInnerHTML={{ __html: equations.final }} />
-              </div>
-            </CardContent>
-          </Card>
+          <MultipleRegressionContent result={result} equations={equations} />
         )}
       </div>
     </div>
