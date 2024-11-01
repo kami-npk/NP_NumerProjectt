@@ -9,6 +9,8 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import { forwardCalculate, backwardCalculate, centerCalculate } from './components/DifferentiationCalculations';
 import { SolutionDisplay } from './components/SolutionDisplay';
+import { useToast } from "@/components/ui/use-toast";
+import { fetchRandomEquation } from './utils/differentiationUtils';
 
 const NumericalDifferentiation = () => {
   const [equation, setEquation] = useState("");
@@ -18,9 +20,31 @@ const NumericalDifferentiation = () => {
   const [selectedDirection, setSelectedDirection] = useState("1");
   const [solution, setSolution] = useState(null);
   const [result, setResult] = useState(null);
+  const { toast } = useToast();
 
   const f = (x) => {
     return evaluate(equation, { x });
+  };
+
+  const getRandomEquation = async () => {
+    try {
+      const data = await fetchRandomEquation();
+      setEquation(data['f(x)']);
+      setX(data.a);
+      setH("0.1");
+      
+      toast({
+        title: "Success",
+        description: "Random equation loaded successfully",
+      });
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch random equation",
+        variant: "destructive",
+      });
+    }
   };
 
   const calculateDifferentiation = () => {
@@ -170,6 +194,14 @@ const NumericalDifferentiation = () => {
                   />
                 </div>
               </div>
+
+              <Button 
+                onClick={getRandomEquation} 
+                variant="outline" 
+                className="w-full"
+              >
+                Get Random Equation
+              </Button>
 
               <Button onClick={calculateDifferentiation} className="w-full">
                 Solve
