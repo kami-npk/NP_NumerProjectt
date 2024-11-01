@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SplinePointsTable } from './components/SplinePointsTable';
 import { SplineSolutionTable } from './components/SplineSolutionTable';
+import { useToast } from "@/components/ui/use-toast";
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -19,7 +20,39 @@ const SplineInterpolation = () => {
   const [splineEquation, setSplineEquation] = useState("");
   const [answerEquation, setAnswerEquation] = useState("");
 
-  // Initialize points array when pointsAmount changes
+  const getRandomEquation = async () => {
+    try {
+      const response = await fetch('http://localhost:80/interpolation.php');
+      const data = await response.json();
+      
+      const randomIndex = Math.floor(Math.random() * data.length);
+      const equation = data[randomIndex];
+      
+      // Create new points array from the random equation
+      const newPoints = Array(5).fill().map((_, index) => ({
+        x: parseFloat(equation[`${index + 1}x`]),
+        fx: parseFloat(equation[`${index + 1}f(x)`])
+      }));
+      
+      setPoints(newPoints);
+      setSelectedPoints(Array(5).fill(true));
+      setPointsAmount(5);
+      setFindX(parseFloat(equation.find_x));
+      
+      toast({
+        title: "Success",
+        description: "Random equation loaded successfully",
+      });
+    } catch (error) {
+      console.error('Error fetching random equation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch random equation",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     setPoints(Array(pointsAmount).fill().map(() => ({ x: 0, fx: 0 })));
     setSelectedPoints(Array(pointsAmount).fill(false));
@@ -205,6 +238,14 @@ const SplineInterpolation = () => {
                   min="2"
                 />
               </div>
+
+              <Button 
+                onClick={getRandomEquation} 
+                variant="outline" 
+                className="w-full max-w-md"
+              >
+                Get Random Equation
+              </Button>
             </div>
 
             <SplinePointsTable
@@ -217,12 +258,6 @@ const SplineInterpolation = () => {
             <Button onClick={calculateSpline} className="w-full">
               Calculate
             </Button>
-
-            {result !== null && (
-              <div className="text-center font-semibold">
-                Result: {typeof result === 'number' ? result.toFixed(4) : result}
-              </div>
-            )}
           </CardContent>
         </Card>
 
