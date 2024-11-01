@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { PointsTable } from './components/PointsTable';
 import { useToast } from "@/components/ui/use-toast";
 import katex from 'katex';
@@ -185,7 +186,6 @@ const LagrangeInterpolation = () => {
             <Button onClick={calculateLagrange} className="w-full">
               Calculate
             </Button>
-
           </CardContent>
         </Card>
 
@@ -194,15 +194,19 @@ const LagrangeInterpolation = () => {
             <CardHeader>
               <CardTitle>Solution</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Interpolation Equations</h3>
-                <div className="space-y-4" dangerouslySetInnerHTML={{ __html: equation }} />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Final Result</h3>
-                <div dangerouslySetInnerHTML={{ __html: answerEquation }} />
-              </div>
+            <CardContent>
+              <ScrollArea className="h-[500px] w-full rounded-md border p-4">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-base font-semibold mb-4">Interpolation Equations</h3>
+                    <div className="space-y-4 text-sm" dangerouslySetInnerHTML={{ __html: equation }} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold mb-4">Final Result</h3>
+                    <div className="text-sm" dangerouslySetInnerHTML={{ __html: answerEquation }} />
+                  </div>
+                </div>
+              </ScrollArea>
             </CardContent>
           </Card>
         )}
