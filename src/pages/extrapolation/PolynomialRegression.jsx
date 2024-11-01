@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { PolynomialRegressionTable } from './components/PolynomialRegressionTable';
+import { PolynomialRegressionInput } from './components/PolynomialRegressionInput';
 import { calculatePolynomialRegression, generateMatrixEquation } from './components/PolynomialRegressionCalculation';
-import Plot from 'react-plotly.js';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -90,36 +88,15 @@ const PolynomialRegression = () => {
             <CardTitle>Input</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-4">
-              <div>
-                <Label>Find f(x) where x is:</Label>
-                <Input
-                  type="number"
-                  value={findX}
-                  onChange={(e) => setFindX(parseFloat(e.target.value))}
-                />
-              </div>
-
-              <div>
-                <Label>Order (m)</Label>
-                <Input
-                  type="number"
-                  value={order}
-                  onChange={(e) => setOrder(parseInt(e.target.value) || 2)}
-                  min="1"
-                />
-              </div>
-
-              <div>
-                <Label>Points Amount</Label>
-                <Input
-                  type="number"
-                  value={pointsAmount}
-                  onChange={(e) => setPointsAmount(parseInt(e.target.value) || 2)}
-                  min="2"
-                />
-              </div>
-            </div>
+            <PolynomialRegressionInput
+              findX={findX}
+              setFindX={setFindX}
+              order={order}
+              setOrder={setOrder}
+              pointsAmount={pointsAmount}
+              setPointsAmount={setPointsAmount}
+              setPoints={setPoints}
+            />
 
             <PolynomialRegressionTable
               points={points}
